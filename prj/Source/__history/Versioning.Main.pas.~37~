@@ -28,6 +28,7 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnExecuteMigrationsClick(Sender: TObject);
+    procedure lbMigrationListClick(Sender: TObject);
   private
     { Private declarations }
     FSSO: TMicrosoftSSO;
@@ -53,6 +54,8 @@ type
 
     procedure LogIn(AProc: TGoToAccessURL);
     procedure LogOut(AProc: TGoToAccessURL);
+
+    procedure UpdateMigrationList;
   public
     { Public declarations }
   end;
@@ -67,9 +70,28 @@ uses
 
 {$R *.dfm}
 
+procedure TfrmVersioning.FormCreate(Sender: TObject);
+begin
+  FSSO := nil;
+  FUserInfo := nil;
+  FDataBaseVersioning := nil;
+  FWebForm := nil;
+
+  UpdateMigrationList;
+end;
+
+procedure TfrmVersioning.FormDestroy(Sender: TObject);
+begin
+  if Assigned(FSSO) then
+    FSSO.Free;
+  if Assigned(FUserInfo) then
+    FUserInfo.Free;
+  if Assigned(FWebForm) then
+    FWebForm.Free;
+end;
+
 procedure TfrmVersioning.btnAddMigrationClick(Sender: TObject);
 begin
-  lblMigrationResult.Caption := '...';
   if not SSO.LoggedIn then
   begin
     ShowMessage(NOT_LOGGED);
@@ -92,14 +114,18 @@ end;
 
 procedure TfrmVersioning.btnExecuteMigrationsClick(Sender: TObject);
 begin
-  lblExecuteResult.Caption := 'Executing Migrations...';
+  if not SSO.LoggedIn then
+  begin
+    ShowMessage(NOT_LOGGED);
+    exit;
+  end;
+
   try
     DataBaseVersioning.ExecuteMigrations;
     lblExecuteResult.Caption := MIGRATION_EXECUTION_SUCCESS;
   except
     lblExecuteResult.Caption := MIGRATION_EXECUTION_FAILED;
   end;
-
 end;
 
 procedure TfrmVersioning.btnLoginClick(Sender: TObject);
@@ -110,26 +136,6 @@ end;
 procedure TfrmVersioning.btnLogoutClick(Sender: TObject);
 begin
   LogOut(ViewGoToWindow);
-end;
-
-procedure TfrmVersioning.FormCreate(Sender: TObject);
-begin
-  FSSO := nil;
-  FUserInfo := nil;
-  FDataBaseVersioning := nil;
-  FWebForm := nil;
-
-  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
-end;
-
-procedure TfrmVersioning.FormDestroy(Sender: TObject);
-begin
-  if Assigned(FSSO) then
-    FSSO.Free;
-  if Assigned(FUserInfo) then
-    FUserInfo.Free;
-  if Assigned(FWebForm) then
-    FWebForm.Free;
 end;
 
 function TfrmVersioning.GetDataBaseVersioning: IDatabaseVersioning;
@@ -160,6 +166,14 @@ begin
   Result := FWebForm;
 end;
 
+procedure TfrmVersioning.lbMigrationListClick(Sender: TObject);
+var
+  LItem: TListBox;
+begin
+  LItem := Sender as TListBox;
+  showmessage(LItem.Items[integer(Sender)]);
+end;
+
 procedure TfrmVersioning.LogIn(AProc: TGoToAccessURL);
 begin
 
@@ -179,6 +193,11 @@ begin
   SSO.LogOut;
 
   lblUserName.Caption := EmptyStr;
+end;
+
+procedure TfrmVersioning.UpdateMigrationList;
+begin
+  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
 end;
 
 procedure TfrmVersioning.ViewGoToWindow(AUrl: string);

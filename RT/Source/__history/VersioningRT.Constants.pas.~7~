@@ -8,7 +8,7 @@ const
   UTENTE = 'User';
   DATA = 'Date';
   MIGRATIONQUERY = 'MigrationQuery';
-  DESCRIPTION = 'Description';
+  DESCRIZIONE = 'Description';
 
   DATE_FORMAT = 'yyyy-mm-dd-hh-nn-ss-zzz';
   JSON_FILE_TYPE = '.json';

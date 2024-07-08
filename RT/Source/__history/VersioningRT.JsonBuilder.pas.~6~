@@ -20,7 +20,7 @@ begin
   Result.AddPair(UTENTE, AUser);
   Result.AddPair(DATA, ADate);
   Result.AddPair(MIGRATIONQUERY, AMigrationQuery);
-  Result.AddPair(DESCRIPTION, ADescription);
+  Result.AddPair(DESCRIZIONE, ADescription);
 end;
 
 end.

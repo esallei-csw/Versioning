@@ -15,6 +15,7 @@ type
 
 
     function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
 
     function GetQueryExecutor: TQueryExecutor;
     property QueryExecutor: TQueryExecutor read GetQueryExecutor write FQueryExecutor;
@@ -27,9 +28,6 @@ type
     procedure AddMigration(AUser, AMigrationQuery, ADescription: string);
     procedure ExecuteMigrations;
     function GetMigrations: TStringList;
-
-
-    property FileManager: TFileManager read GetFileManager write FFileManager;
   end;
 
 implementation
@@ -106,23 +104,7 @@ begin
 end;
 
 function TDatabaseVersioning.GetMigrations: TStringList;
-//var
-//  LJsonObj: TJSONObject;
-//  LFile: string;
 begin
-//  Result := TStringList.Create;
-//  LJsonObj := TJSONObject.Create;
-//  try
-//    for LFile in MigrationFileReader.GetOrderedMigrationFiles do
-//    begin
-//      LJsonObj := FileManager.ReadFromFile(LFile);
-//      Result.Add(LJsonObj.GetValue<string>(DESCRIPTION));
-//    end;
-//  finally
-//    LJsonObj.Free;
-//  end;
-
-
   Result := MigrationFileReader.GetOrderedMigrationFiles;
 end;
 

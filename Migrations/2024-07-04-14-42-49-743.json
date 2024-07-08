@@ -1,1 +1,1 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-04-14-42-49-743","MigrationQuery":"create table PRODOTTI\r\n(\r\nID integer identity(1, 1)\r\n, Name varchar(50)\r\n)","Description":"Creazione tabella prodotti"}
+﻿{"User":"Sallei Enrico","Date":"2024-07-04-14-42-49-743","MigrationQuery":"create table PRODOTTI\r\n(\r\nID integer identity(1, 1)\r\n, Name varchar(50)\r\n)","Description":"Creazione tabella PRODOTTI"}

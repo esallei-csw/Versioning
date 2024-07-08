@@ -127,6 +127,5 @@ object frmVersioning: TfrmVersioning
     Height = 257
     ItemHeight = 13
     TabOrder = 6
-    OnClick = lbMigrationListClick
   end
 end

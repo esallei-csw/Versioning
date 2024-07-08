@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Versioning.WebView, LoginSSO.User.Information, LoginSSO.Logic, VersioningRT.LogicInterface, VersioningRT.Logic;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Versioning.WebView, LoginSSO.User.Information, LoginSSO.Logic
+  , VersioningRT.LogicInterface, VersioningRT.Logic, VersioningRT.FileManager, System.JSON;
 
 type
   TfrmVersioning = class(TForm)
@@ -28,12 +29,14 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnExecuteMigrationsClick(Sender: TObject);
+    procedure lbMigrationListClick(Sender: TObject);
   private
     { Private declarations }
     FSSO: TMicrosoftSSO;
     FUserInfo: TSSOUserInformationModel;
     FWebForm: TfrmWebViewLogin;
     FDataBaseVersioning: IDatabaseVersioning;
+    FFileManager: TFileManager;
 
 
     procedure ViewGoToWindow(AUrl: string);
@@ -50,9 +53,15 @@ type
     function GetDataBaseVersioning: IDatabaseVersioning;
     property DataBaseVersioning: IDatabaseVersioning read GetDataBaseVersioning write FDataBaseVersioning;
 
+    function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
+
 
     procedure LogIn(AProc: TGoToAccessURL);
     procedure LogOut(AProc: TGoToAccessURL);
+
+    procedure UpdateMigrationList;
+    procedure FormatJson(AJsonObj: TJSONObject);
   public
     { Public declarations }
   end;
@@ -74,7 +83,7 @@ begin
   FDataBaseVersioning := nil;
   FWebForm := nil;
 
-  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
+  UpdateMigrationList;
 end;
 
 procedure TfrmVersioning.FormDestroy(Sender: TObject);
@@ -142,6 +151,13 @@ begin
   Result := FDataBaseVersioning;
 end;
 
+function TfrmVersioning.GetFileManager: TFileManager;
+begin
+  if not Assigned(FFileManager) then
+    FFileManager := TFileManager.Create;
+  Result := FFileManager;
+end;
+
 function TfrmVersioning.GetSSO: TMicrosoftSSO;
 begin
   if not Assigned(FSSO) then
@@ -163,6 +179,38 @@ begin
   Result := FWebForm;
 end;
 
+procedure TfrmVersioning.lbMigrationListClick(Sender: TObject);
+begin
+  FormatJson(FileManager.ReadFromFile(lbMigrationList.Items[lbMigrationList.ItemIndex]));
+end;
+
+procedure TfrmVersioning.FormatJson(AJsonObj: TJSONObject);
+var
+  User, Date, MigrationQuery, Description: string;
+begin
+  try
+    if Assigned(AJsonObj) then
+    begin
+      User := AJsonObj.GetValue<string>('User');
+      Date := AJsonObj.GetValue<string>('Date');
+      MigrationQuery := AJsonObj.GetValue<string>('MigrationQuery');
+      Description := AJsonObj.GetValue<string>('Description');
+
+      ShowMessage(Format('User: %s' + sLineBreak +
+                         'Date: %s' + sLineBreak +
+                         'MigrationQuery: %s' + sLineBreak +
+                         'Description: %s',
+                         [User, Date, MigrationQuery, Description]));
+    end
+    else
+      ShowMessage('Invalid JSON object.');
+  except
+    on E: Exception do
+      ShowMessage('Error accessing JSON object: ' + E.Message);
+  end;
+end;
+
+
 procedure TfrmVersioning.LogIn(AProc: TGoToAccessURL);
 begin
 
@@ -182,6 +230,11 @@ begin
   SSO.LogOut;
 
   lblUserName.Caption := EmptyStr;
+end;
+
+procedure TfrmVersioning.UpdateMigrationList;
+begin
+  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
 end;
 
 procedure TfrmVersioning.ViewGoToWindow(AUrl: string);
