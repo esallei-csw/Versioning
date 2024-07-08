@@ -1,0 +1,16 @@
+unit VersioningRT.Messages;
+
+interface
+
+resourcestring
+  //Errors
+  EMPTY_PARAMS = 'Parametri vuoti';
+
+
+  //Messages
+  MIGRATION_CREATED = 'Migration successfully created!';
+  MIGRATION_FAILED = 'Migration creation failed!';
+
+implementation
+
+end.

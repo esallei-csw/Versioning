@@ -1,0 +1,91 @@
+object frmVersioning: TfrmVersioning
+  Left = 0
+  Top = 0
+  Caption = 'Versioning Application'
+  ClientHeight = 517
+  ClientWidth = 635
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'Tahoma'
+  Font.Style = []
+  OldCreateOrder = False
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  PixelsPerInch = 96
+  TextHeight = 13
+  object lblUser: TLabel
+    Left = 480
+    Top = 9
+    Width = 22
+    Height = 13
+    Caption = 'User'
+  end
+  object lblUserName: TLabel
+    Left = 520
+    Top = 9
+    Width = 68
+    Height = 13
+    Caption = 'Not Logged In'
+  end
+  object btnLogin: TButton
+    Left = 472
+    Top = 33
+    Width = 65
+    Height = 25
+    Caption = 'Login'
+    TabOrder = 0
+    OnClick = btnLoginClick
+  end
+  object btnLogout: TButton
+    Left = 543
+    Top = 33
+    Width = 64
+    Height = 25
+    Caption = 'Logout'
+    TabOrder = 1
+    OnClick = btnLogoutClick
+  end
+  object edtQuery: TEdit
+    Left = 8
+    Top = 72
+    Width = 615
+    Height = 121
+    TabOrder = 2
+    TextHint = 'Migration Query'
+  end
+  object btnAddMigration: TButton
+    Left = 8
+    Top = 461
+    Width = 105
+    Height = 41
+    Caption = 'Add Migration'
+    TabOrder = 3
+    OnClick = btnAddMigrationClick
+  end
+  object btnExecuteMigrations: TButton
+    Left = 119
+    Top = 461
+    Width = 105
+    Height = 41
+    Caption = 'Execute Migrations'
+    TabOrder = 4
+  end
+  object edtRollbackQuery: TEdit
+    Left = 8
+    Top = 199
+    Width = 615
+    Height = 121
+    TabOrder = 5
+    TextHint = 'Rollback Query'
+  end
+  object edtDescription: TEdit
+    Left = 8
+    Top = 326
+    Width = 615
+    Height = 121
+    TabOrder = 6
+    TextHint = 'Description'
+  end
+end

@@ -1,0 +1,128 @@
+unit VersioningRT.Logic;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, VersioningRT.LogicInterface, System.JSON, VersioningRT.FileManager, VersioningRT.JsonBuilder
+  , VersioningRT.QueryExecutor, VersioningRT.MigrationFileReader;
+type
+  TDatabaseVersioning = class(TInterfacedObject, IDatabaseVersioning)
+  private
+
+    FFileManager: TFileManager;
+    FQueryExecutor: TQueryExecutor;
+    FMigrationFileReader: TMigrationFileReader;
+
+
+    function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
+
+    function GetQueryExecutor: TQueryExecutor;
+    property QueryExecutor: TQueryExecutor read GetQueryExecutor write FQueryExecutor;
+
+    function GetMigrationFileReader: TMigrationFileReader;
+    property MigrationFileReader: TMigrationFileReader read GetMigrationFileReader write FMigrationFileReader;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddMigration(AUser, AMigrationQuery, ADescription: string);
+    procedure ExecuteMigrations;
+    function GetMigrations: TStringList;
+  end;
+
+implementation
+
+uses
+  VersioningRT.Constants, VersioningRT.Messages;
+
+{ TDatabaseVersioning }
+
+procedure TDatabaseVersioning.AddMigration(AUser, AMigrationQuery, ADescription: string);
+var
+  LMigrationJson: TJSONObject;
+  LFileName: string;
+begin
+  LFileName := FormatDateTime(DATE_FORMAT, Now);
+  LMigrationJson := TJSONObject.Create;
+  try
+    LMigrationJson := TJSONBuilder.CreateMigrationJSON(AUser, LFileName, AMigrationQuery, ADescription);
+    FileManager.WriteToFile(MIGRATION_LOCATION + LFileName + JSON_FILE_TYPE, LMigrationJson);
+  finally
+    LMigrationJson.Free;
+  end;
+end;
+
+constructor TDatabaseVersioning.Create;
+begin
+  inherited;
+  FFileManager := nil;
+  FQueryExecutor := nil;
+end;
+
+destructor TDatabaseVersioning.Destroy;
+begin
+  if Assigned(FFileManager) then
+    FFileManager.Free;
+  if Assigned(FQueryExecutor) then
+    FQueryExecutor.Free;
+  inherited;
+end;
+
+procedure TDatabaseVersioning.ExecuteMigrations;
+var
+  LFile: string;
+  LJsonObj: TJSONObject;
+  LQuery: string;
+  LOrderedFiles: TStringList;
+begin
+  LJsonObj := TJSONObject.Create;
+
+  try//get files in order
+    LOrderedFiles := MigrationFileReader.GetOrderedMigrationFiles;
+
+    for LFile in LOrderedFiles do
+    begin
+      //read from file
+      LjsonObj := FileManager.ReadFromFile(LFIle);
+      //extract query from json
+      LQuery := LJsonObj.GetValue<string>(MIGRATIONQUERY);
+      //execute query
+      try
+        QueryExecutor.ExecuteQuery(LQuery);
+      except
+        raise Exception.Create(QUERY_FAILED + LFile);
+      end;
+    end;
+  finally
+    LJsonObj.Free;
+  end;
+
+end;
+
+function TDatabaseVersioning.GetFileManager: TFileManager;
+begin
+  if not Assigned(FFileManager) then
+    FFileManager := TFileManager.Create;
+  Result := FFileManager;
+end;
+
+function TDatabaseVersioning.GetMigrationFileReader: TMigrationFileReader;
+begin
+  if not Assigned(FMigrationFileReader) then
+    FMigrationFileReader := TMigrationFileReader.Create(MIGRATION_LOCATION);
+  Result := FMigrationFileReader;
+end;
+
+function TDatabaseVersioning.GetMigrations: TStringList;
+begin
+  Result := MigrationFileReader.GetOrderedMigrationFiles;
+end;
+
+function TDatabaseVersioning.GetQueryExecutor: TQueryExecutor;
+begin
+  if not Assigned(FQueryExecutor) then
+    FQueryExecutor := TQueryExecutor.Create('Versioning', 'CSW325', 'sa', '1Password1');
+  Result := FQueryExecutor;
+end;
+
+end.

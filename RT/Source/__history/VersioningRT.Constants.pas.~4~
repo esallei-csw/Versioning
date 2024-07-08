@@ -1,0 +1,21 @@
+unit VersioningRT.Constants;
+
+interface
+
+const
+  MIGRATION_LOCATION = 'C:\Sviluppo\Versioning\Migrations\';
+  EMPTY_PARAMS = 'Parametri vuoti';
+
+  UTENTE = 'User';
+  DATA = 'Date';
+  MIGRATIONQUERY = 'MigrationQuery';
+  DESCRIZIONE = 'Description';
+  ROLLBACKQUERY = 'RollbackQuery';
+
+
+
+implementation
+
+
+
+end.

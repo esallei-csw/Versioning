@@ -1,0 +1,13 @@
+unit VersioningRT.Constants;
+
+interface
+
+const
+  MIGRATION_LOCATION = 'C:\Sviluppo\Versioning\Migrations\';
+
+
+implementation
+
+
+
+end.

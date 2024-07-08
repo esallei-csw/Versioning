@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2024/07/02 13:14:38.000.994,=C:\Users\esallei\OneDrive - centrosoftware.com\Documenti\Embarcadero\Studio\Projects\Unit2.pas</Transaction>
+    <Transaction>2024/07/02 13:15:36.000.814,C:\Users\esallei\OneDrive - centrosoftware.com\Documenti\Embarcadero\Studio\Projects\Unit2.dfm=C:\Sviluppo\Versioning\prj\Source\Versioning.Main.dfm</Transaction>
+    <Transaction>2024/07/02 13:15:36.000.814,C:\Users\esallei\OneDrive - centrosoftware.com\Documenti\Embarcadero\Studio\Projects\Unit2.pas=C:\Sviluppo\Versioning\prj\Source\Versioning.Main.pas</Transaction>
+    <Transaction>2024/07/02 13:16:24.000.933,C:\Users\esallei\OneDrive - centrosoftware.com\Documenti\Embarcadero\Studio\Projects\Project2.dproj=C:\Sviluppo\Versioning\prj\Source\Versioning.dproj</Transaction>
+    <Transaction>2024/07/02 15:00:44.000.489,=C:\Sviluppo\Versioning\prj\Source\Unit1.pas</Transaction>
+    <Transaction>2024/07/02 15:01:04.000.830,=C:\Sviluppo\Versioning\prj\Source\Unit1.pas</Transaction>
+    <Transaction>2024/07/02 15:01:57.000.254,C:\Sviluppo\Versioning\prj\Source\Versioning.WebView.pas=C:\Sviluppo\Versioning\prj\Source\Unit1.pas</Transaction>
+    <Transaction>2024/07/02 15:01:57.000.254,C:\Sviluppo\Versioning\prj\Source\Versioning.WebView.dfm=C:\Sviluppo\Versioning\prj\Source\Unit1.dfm</Transaction>
+    <Transaction>2024/07/02 15:06:32.000.915,C:\Sviluppo\Versioning\prj\Source\Versioning.WebView.pas=</Transaction>
+    <Transaction>2024/07/02 15:06:38.000.198,=C:\Sviluppo\Versioning\prj\Source\Unit1.pas</Transaction>
+    <Transaction>2024/07/02 15:08:25.000.759,C:\Sviluppo\Versioning\prj\Source\Versioning.WebView.dfm=C:\Sviluppo\Versioning\prj\Source\Unit1.dfm</Transaction>
+    <Transaction>2024/07/02 15:08:25.000.759,C:\Sviluppo\Versioning\prj\Source\Versioning.WebView.pas=C:\Sviluppo\Versioning\prj\Source\Unit1.pas</Transaction>
+  </Transactions>
+</BorlandProject>

@@ -1,0 +1,51 @@
+unit VersioningRT.MigrationFileReader;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, System.IOUtils, Generics.Collections;
+
+type
+  TMigrationFileReader = class
+  private
+    FDirectory: string;
+  public
+    constructor Create(const Directory: string);
+    function GetOrderedMigrationFiles: TArray<string>;
+  end;
+
+implementation
+
+{ TMigrationFileReader }
+
+constructor TMigrationFileReader.Create(const Directory: string);
+begin
+  inherited Create;
+  FDirectory := Directory;
+end;
+
+function TMigrationManager.GetOrderedMigrationFiles: TArray<string>;
+var
+  SearchRec: TSearchRec;
+  FileList: TStringList;
+  FileName: string;
+begin
+  FileList := TStringList.Create;
+  try
+    if FindFirst('Migrations\*.json', faAnyFile, SearchRec) = 0 then
+    begin
+      repeat
+        FileName := 'Migrations\' + SearchRec.Name;
+        FileList.Add(FileName);
+      until FindNext(SearchRec) <> 0;
+      FindClose(SearchRec);
+    end;
+
+    FileList.Sort;  // Ordina i file in ordine alfabetico (quindi cronologico)
+    Result := FileList.ToStringArray;
+  finally
+    FileList.Free;
+  end;
+end;
+
+end.

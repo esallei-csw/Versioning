@@ -1,0 +1,1 @@
+﻿{"User":"Sallei Enrico","Date":"2024-07-04-14-51-46-267","MigrationQuery":"alter table PRODOTTI\r\nadd Descrizione varchar(500) null;","Description":"Aggiunta colonna descrizione"}

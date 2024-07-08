@@ -1,0 +1,28 @@
+unit VersioningRT.JsonBuilder;
+
+interface
+
+uses
+  System.SysUtils, System.JSON;
+
+type
+  TJSONBuilder = class
+  public
+    class function CreateMigrationJSON(const Utente, Data, MigrationQuery, Descrizione, RollbackQuery: string): TJSONObject;
+  end;
+
+implementation
+
+{ TJSONBuilder }
+
+class function TJSONBuilder.CreateMigrationJSON(const Utente, Data, MigrationQuery, Descrizione, RollbackQuery: string): TJSONObject;
+begin
+  Result := TJSONObject.Create;
+  Result.AddPair(UTENTE, Utente);
+  Result.AddPair(DATA, Data);
+  Result.AddPair(MIGRATIONQUERY, MigrationQuery);
+  Result.AddPair(DESCRIZIONE, Descrizione);
+  Result.AddPair(ROLLBACKQUERY, RollbackQuery);
+end;
+
+end.

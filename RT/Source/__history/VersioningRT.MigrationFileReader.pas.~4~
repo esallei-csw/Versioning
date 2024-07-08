@@ -1,0 +1,37 @@
+unit VersioningRT.MigrationFileReader;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, System.IOUtils, Generics.Collections;
+
+type
+  TMigrationFileReader = class
+  private
+    FDirectory: string;
+  public
+    constructor Create(const Directory: string);
+    function GetOrderedMigrationFiles: TArray<string>;
+  end;
+
+implementation
+
+uses
+  System.Types;
+
+{ TMigrationFileReader }
+
+constructor TMigrationFileReader.Create(const Directory: string);
+begin
+  inherited Create;
+  FDirectory := Directory;
+end;
+
+function TMigrationFileReader.GetOrderedMigrationFiles: TArray<string>;
+var
+  LFiles: TArray<string>;
+begin
+  LFiles := TDirectory.GetFiles(FDirectory);
+end;
+
+end.

@@ -1,0 +1,103 @@
+unit VersioningRT.Logic;
+
+interface
+
+uses
+  System.SysUtils, System.Classes, VersioningRT.LogicInterface, System.JSON, VersioningRT.FileManager, VersioningRT.JsonBuilder
+  , VersioningRT.QueryExecutor;
+type
+  TDatabaseVersioning = class(TInterfacedObject, IDatabaseVersioning)
+  private
+
+    FFileManager: TFileManager;
+    FQueryExecutor: TQueryExecutor;
+
+
+    function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
+
+    function GetQueryExecutor: TQueryExecutor;
+    property QueryExecutor: TQueryExecutor read GetQueryExecutor write FQueryExecutor;
+  public
+    constructor Create;
+    destructor Destroy;
+    procedure InitializeVersioning;
+    procedure AddMigration(AUser, AMigrationQuery, ADescription, ARollbackQuery: string);
+    procedure ExecuteMigrations;
+    procedure RollbackLastMigration;
+  end;
+
+implementation
+
+uses
+  VersioningRT.Constants;
+
+{ TDatabaseVersioning }
+
+procedure TDatabaseVersioning.AddMigration(AUser, AMigrationQuery, ADescription, ARollbackQuery: string);
+var
+  LMigrationJson: TJSONObject;
+  LFileName: string;
+begin
+  LFileName := FormatDateTime(DATE_FORMAT, Now);
+  LMigrationJson := TJSONObject.Create;
+  LMigrationJson := TJSONBuilder.CreateMigrationJSON(AUser, LFileName, AMigrationQuery, ADescription, ARollbackQuery);
+  FileManager.WriteToFile(MIGRATION_LOCATION + LFileName, LMigrationJson);
+end;
+
+constructor TDatabaseVersioning.Create;
+begin
+  inherited;
+  FFileManager := nil;
+  FQueryExecutor := nil;
+end;
+
+destructor TDatabaseVersioning.Destroy;
+begin
+  if Assigned(FFileManager) then
+    FFileManager.Free;
+  if Assigned(FQueryExecutor) then
+    FQueryExecutor.Free;
+  inherited;
+end;
+
+procedure TDatabaseVersioning.ExecuteMigrations;
+var
+  LQuery: string;
+begin
+  //get files in order     hard part!!!!
+  //open file
+  //extract query from json
+  //execute query with queryExecutor
+
+  QueryExecutor.ExecuteQuery(LQuery)
+end;
+
+function TDatabaseVersioning.GetFileManager: TFileManager;
+begin
+  if not Assigned(FFileManager) then
+    FFileManager := TFileManager.Create;
+  Result := FFileManager;
+end;
+
+function TDatabaseVersioning.GetQueryExecutor: TQueryExecutor;
+var
+  LDataBaseFileName: string;
+begin
+  LDataBaseFileName := DATABASE_LOCATION;
+  if not Assigned(FQueryExecutor) then
+    FQueryExecutor := TQueryExecutor.Create(LDataBaseFileName);
+  Result := FQueryExecutor;
+end;
+
+procedure TDatabaseVersioning.InitializeVersioning;
+begin
+
+end;
+
+procedure TDatabaseVersioning.RollbackLastMigration;
+begin
+
+end;
+
+end.

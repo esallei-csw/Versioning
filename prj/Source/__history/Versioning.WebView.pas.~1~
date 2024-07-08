@@ -1,0 +1,25 @@
+unit Versioning.WebView;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, WebView2, Winapi.ActiveX, Vcl.Edge;
+
+type
+  TfrmWebViewLogin = class(TForm)
+    EdgeBrowser1: TEdgeBrowser;
+  private
+    { Private declarations }
+  public
+    { Public declarations }
+  end;
+
+var
+  frmWebViewLogin: TfrmWebViewLogin;
+
+implementation
+
+{$R *.dfm}
+
+end.

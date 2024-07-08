@@ -1,0 +1,25 @@
+unit VersioningRT.Constants;
+
+interface
+
+const
+  MIGRATION_LOCATION = 'C:\Sviluppo\Versioning\Migrations\';
+  DATABASE_LOCATION = 'C:\Sviluppo\Versioning\DB\database.sqlite';
+
+  UTENTE = 'User';
+  DATA = 'Date';
+  MIGRATIONQUERY = 'MigrationQuery';
+  DESCRIZIONE = 'Description';
+  ROLLBACKQUERY = 'RollbackQuery';
+
+  DATE_FORMAT = 'yyyy-mm-dd-hh-nn-ss-zzz';
+  JSON_FILE_TYPE = '.json';
+
+
+
+
+implementation
+
+
+
+end.

@@ -1,0 +1,83 @@
+unit VersioningRT.FileManager;
+
+interface
+
+uses
+  System.SysUtils, System.Classes;
+
+type
+  TFileManager = class
+  public
+    class procedure WriteToFile(const FileName: string; const Text: string);
+    class function ReadFromFile(const FileName: string): string;
+    class procedure AppendToFile(const FileName: string; const Text: string);
+  end;
+
+implementation
+
+{ TFileManager }
+
+class procedure TFileManager.WriteToFile(const FileName: string; const Text: string);
+var
+  LFileStream: TFileStream;
+  LStreamWriter: TStreamWriter;
+begin
+  LFileStream := TFileStream.Create(FileName, fmCreate);
+  try
+    LStreamWriter := TStreamWriter.Create(LFileStream);
+    try
+      LStreamWriter.Write(Text);
+    finally
+      LStreamWriter.Free;
+    end;
+  finally
+    LFileStream.Free;
+  end;
+end;
+
+class procedure TFileManager.AppendToFile(const FileName: string; const Text: string);
+var
+  LFileStream: TFileStream;
+  LStreamWriter: TStreamWriter;
+begin
+  if FileExists(FileName) then
+    LFileStream := TFileStream.Create(FileName, fmOpenReadWrite or fmShareDenyWrite)
+  else
+    LFileStream := TFileStream.Create(FileName, fmCreate);
+
+  try
+    LFileStream.Seek(0, soEnd);
+    LStreamWriter := TStreamWriter.Create(LFileStream);
+    try
+      LStreamWriter.Write(Text);
+    finally
+      LStreamWriter.Free;
+    end;
+  finally
+    LFileStream.Free;
+  end;
+end;
+
+class function TFileManager.ReadFromFile(const FileName: string): string;
+var
+  LFileStream: TFileStream;
+  LStreamReader: TStreamReader;
+begin
+  Result := '';
+  if not FileExists(FileName) then
+    Exit;
+
+  LFileStream := TFileStream.Create(FileName, fmOpenRead or fmShareDenyWrite);
+  try
+    LStreamReader := TStreamReader.Create(LFileStream);
+    try
+      Result := LStreamReader.ReadToEnd;
+    finally
+      LStreamReader.Free;
+    end;
+  finally
+    LFileStream.Free;
+  end;
+end;
+
+end.
