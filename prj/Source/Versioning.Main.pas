@@ -186,27 +186,27 @@ end;
 
 procedure TfrmVersioning.FormatJson(AJsonObj: TJSONObject);
 var
-  User, Date, MigrationQuery, Description: string;
+  LUser, LDate, LMigrationQuery, LDescription: string;
 begin
   try
     if Assigned(AJsonObj) then
     begin
-      User := AJsonObj.GetValue<string>('User');
-      Date := AJsonObj.GetValue<string>('Date');
-      MigrationQuery := AJsonObj.GetValue<string>('MigrationQuery');
-      Description := AJsonObj.GetValue<string>('Description');
+      LUser := AJsonObj.GetValue<string>(UTENTE);
+      LDate := AJsonObj.GetValue<string>(DATA);
+      LMigrationQuery := AJsonObj.GetValue<string>(MIGRATIONQUERY);
+      LDescription := AJsonObj.GetValue<string>(DESCRIPTION);
 
-      ShowMessage(Format('User: %s' + sLineBreak +
-                         'Date: %s' + sLineBreak +
-                         'MigrationQuery: %s' + sLineBreak +
-                         'Description: %s',
-                         [User, Date, MigrationQuery, Description]));
+      ShowMessage(Format(USER_FORM + sLineBreak +
+                         DATE_FORM + sLineBreak +
+                         MIGRATION_FORM + sLineBreak +
+                         DESCRIPTION_FORM,
+                         [LUser, LDate, LMigrationQuery, LDescription]));
     end
     else
-      ShowMessage('Invalid JSON object.');
+      ShowMessage(INVALID_JSON);
   except
     on E: Exception do
-      ShowMessage('Error accessing JSON object: ' + E.Message);
+      ShowMessage(JSON_ACCESS_ERROR + E.Message);
   end;
 end;
 
