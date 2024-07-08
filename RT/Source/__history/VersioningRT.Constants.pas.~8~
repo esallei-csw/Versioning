@@ -23,11 +23,6 @@ const
   DEFAULT_USERNAME = 'sa';
   DEFAULT_PSW = '1Password1';
 
-  USER_FORM = 'User: %s';
-  DATE_FORM = 'Date: %s';
-  MIGRATION_FORM = 'MigrationQuery: %s';
-  DESCRIPTION_FORM = 'Description: %s';
-
 
 
 
