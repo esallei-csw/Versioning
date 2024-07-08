@@ -1,1 +1,0 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-08-12-10-56-679","MigrationQuery":"alter table PRODOTTI\r\nadd Peso integer;","Description":"inserimento colonna Peso"}

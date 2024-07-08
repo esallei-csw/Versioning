@@ -1,1 +1,0 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-08-09-47-36-535","MigrationQuery":"insert into\r\n\tPRODOTTI(Name, Descrizione, Quantit\u00E0)\r\n\tvalues('Plastica', 'Scatola di plastica PVC', 250)","Description":"inserimento prodotto Plastica"}

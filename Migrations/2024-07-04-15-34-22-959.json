@@ -1,1 +1,0 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-04-15-34-22-959","MigrationQuery":"insert into PRODOTTI(Name, Descrizione, Quantit\u00E0)\r\nvalues ('Pane', 'Pane integrale con semi di sesamo', 12)","Description":"Aggiunta colonna Quantit\u00E0"}

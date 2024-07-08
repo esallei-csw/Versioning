@@ -1,1 +1,0 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-08-12-07-45-277","MigrationQuery":"insert into\r\n\tPRODOTTI(Name, Descrizione, Quantit\u00E0)\r\n\tvalues('Torcia elettrica', 'Torcia elettrica ricaricabile', 20)\r\n","Description":"inserimento prodotto Torica Elettrica"}

@@ -1,1 +1,0 @@
-﻿{"User":"Sallei Enrico","Date":"2024-07-04-15-26-46-287","MigrationQuery":"alter table PRODOTTI\r\nadd Quantit\u00E0 integer;","Description":"Aggiunta colonna Quantit\u00E0"}
