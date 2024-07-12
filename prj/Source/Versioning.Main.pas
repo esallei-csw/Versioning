@@ -181,6 +181,8 @@ end;
 
 procedure TfrmVersioning.lbMigrationListClick(Sender: TObject);
 begin
+  if lbMigrationList.ItemIndex = -1 then
+    exit;
   FormatJson(FileManager.ReadFromFile(lbMigrationList.Items[lbMigrationList.ItemIndex]));
 end;
 

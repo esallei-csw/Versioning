@@ -3,7 +3,7 @@ unit VersioningRT.Constants;
 interface
 
 const
-  MIGRATION_LOCATION = 'C:\Sviluppo\Migrations\';
+  MIGRATION_LOCATION = 'C:\Sviluppo\Migrations';
 
   UTENTE = 'User';
   DATA = 'Date';
