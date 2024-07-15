@@ -15,7 +15,6 @@ type
 
 
     function GetFileManager: TFileManager;
-    property FileManager: TFileManager read GetFileManager write FFileManager;
 
     function GetQueryExecutor: TQueryExecutor;
     property QueryExecutor: TQueryExecutor read GetQueryExecutor write FQueryExecutor;
@@ -25,39 +24,27 @@ type
   public
     constructor Create;
     destructor Destroy; override;
-    procedure InitializeVersioning;
-    procedure AddMigration(AUser, AMigrationQuery, ADescription, ARollbackQuery: string);
+    procedure AddMigration(AUser, AMigrationQuery, ADescription: string);
     procedure ExecuteMigrations;
-    procedure RollbackLastMigration;
+    function GetMigrations: TStringList;
+
+
+    property FileManager: TFileManager read GetFileManager write FFileManager;
   end;
 
 implementation
 
 uses
-  VersioningRT.Constants;
+  VersioningRT.Constants, VersioningRT.Messages;
 
 { TDatabaseVersioning }
-
-procedure TDatabaseVersioning.AddMigration(AUser, AMigrationQuery, ADescription, ARollbackQuery: string);
-var
-  LMigrationJson: TJSONObject;
-  LFileName: string;
-begin
-  LFileName := FormatDateTime(DATE_FORMAT, Now);
-  LMigrationJson := TJSONObject.Create;
-  try
-    LMigrationJson := TJSONBuilder.CreateMigrationJSON(AUser, LFileName, AMigrationQuery, ADescription, ARollbackQuery);
-    FileManager.WriteToFile(MIGRATION_LOCATION + LFileName + JSON_FILE_TYPE, LMigrationJson);
-  finally
-    LMigrationJson.Free;
-  end;
-end;
 
 constructor TDatabaseVersioning.Create;
 begin
   inherited;
   FFileManager := nil;
   FQueryExecutor := nil;
+  FMigrationFileReader := nil;
 end;
 
 destructor TDatabaseVersioning.Destroy;
@@ -66,7 +53,24 @@ begin
     FFileManager.Free;
   if Assigned(FQueryExecutor) then
     FQueryExecutor.Free;
+  if Assigned(FMigrationFileReader) then
+    FMigrationFileReader.Free;
   inherited;
+end;
+
+procedure TDatabaseVersioning.AddMigration(AUser, AMigrationQuery, ADescription: string);
+var
+  LMigrationJson: TJSONObject;
+  LFileName: string;
+begin
+  LFileName := FormatDateTime(DATE_FORMAT, Now);
+  LMigrationJson := TJSONObject.Create;
+  try
+    LMigrationJson := TJSONBuilder.CreateMigrationJSON(AUser, LFileName, AMigrationQuery, ADescription);
+    FileManager.WriteToFile(MIGRATION_LOCATION + LFileName + JSON_FILE_TYPE, LMigrationJson);
+  finally
+    LMigrationJson.Free;
+  end;
 end;
 
 procedure TDatabaseVersioning.ExecuteMigrations;
@@ -75,11 +79,11 @@ var
   LJsonObj: TJSONObject;
   LQuery: string;
   LOrderedFiles: TStringList;
-  I: integer;
 begin
   LJsonObj := TJSONObject.Create;
 
-  try//get files in order
+  //get files in order
+  try
     LOrderedFiles := MigrationFileReader.GetOrderedMigrationFiles;
 
     for LFile in LOrderedFiles do
@@ -89,12 +93,21 @@ begin
       //extract query from json
       LQuery := LJsonObj.GetValue<string>(MIGRATIONQUERY);
       //execute query
-      QueryExecutor.ExecuteQuery(LQuery);
+      try
+        QueryExecutor.ExecuteQuery(LQuery);
+      except
+        raise Exception.Create(QUERY_FAILED + LFile);
+      end;
     end;
   finally
     LJsonObj.Free;
   end;
 
+end;
+
+function TDatabaseVersioning.GetMigrations: TStringList;
+begin
+  Result := MigrationFileReader.GetOrderedMigrationFiles;
 end;
 
 function TDatabaseVersioning.GetFileManager: TFileManager;
@@ -114,18 +127,8 @@ end;
 function TDatabaseVersioning.GetQueryExecutor: TQueryExecutor;
 begin
   if not Assigned(FQueryExecutor) then
-    FQueryExecutor := TQueryExecutor.Create(DATABASE_LOCATION);
+    FQueryExecutor := TQueryExecutor.Create(DEFAULT_DBNAME, DEFAULT_SERVERNAME, DEFAULT_USERNAME, DEFAULT_PSW);
   Result := FQueryExecutor;
-end;
-
-procedure TDatabaseVersioning.InitializeVersioning;
-begin
-
-end;
-
-procedure TDatabaseVersioning.RollbackLastMigration;
-begin
-
 end;
 
 end.

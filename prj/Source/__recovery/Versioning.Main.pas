@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
-  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Versioning.WebView, LoginSSO.User.Information, LoginSSO.Logic, VersioningRT.LogicInterface, VersioningRT.Logic;
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Versioning.WebView, LoginSSO.User.Information, LoginSSO.Logic
+  , VersioningRT.LogicInterface, VersioningRT.Logic, VersioningRT.FileManager, System.JSON;
 
 type
   TfrmVersioning = class(TForm)
@@ -28,12 +29,14 @@ type
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure btnExecuteMigrationsClick(Sender: TObject);
+    procedure lbMigrationListClick(Sender: TObject);
   private
     { Private declarations }
     FSSO: TMicrosoftSSO;
     FUserInfo: TSSOUserInformationModel;
     FWebForm: TfrmWebViewLogin;
     FDataBaseVersioning: IDatabaseVersioning;
+    FFileManager: TFileManager;
 
 
     procedure ViewGoToWindow(AUrl: string);
@@ -50,9 +53,15 @@ type
     function GetDataBaseVersioning: IDatabaseVersioning;
     property DataBaseVersioning: IDatabaseVersioning read GetDataBaseVersioning write FDataBaseVersioning;
 
+    function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
+
 
     procedure LogIn(AProc: TGoToAccessURL);
     procedure LogOut(AProc: TGoToAccessURL);
+
+    procedure UpdateMigrationList;
+    procedure FormatJson(AJsonObj: TJSONObject);
   public
     { Public declarations }
   end;
@@ -74,7 +83,7 @@ begin
   FDataBaseVersioning := nil;
   FWebForm := nil;
 
-  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
+  UpdateMigrationList;
 end;
 
 procedure TfrmVersioning.FormDestroy(Sender: TObject);
@@ -111,6 +120,12 @@ end;
 
 procedure TfrmVersioning.btnExecuteMigrationsClick(Sender: TObject);
 begin
+  if not SSO.LoggedIn then
+  begin
+    ShowMessage(NOT_LOGGED);
+    exit;
+  end;
+
   try
     DataBaseVersioning.ExecuteMigrations;
     lblExecuteResult.Caption := MIGRATION_EXECUTION_SUCCESS;
@@ -132,8 +147,15 @@ end;
 function TfrmVersioning.GetDataBaseVersioning: IDatabaseVersioning;
 begin
   if not Assigned(FDataBaseVersioning) then
-    FDataBaseVersioning := TDatabaseVersioning.Create;
+    FDataBaseVersioning := TDatabaseVersioning.Create(DEFAULT_MIGRATION_LOCATION);
   Result := FDataBaseVersioning;
+end;
+
+function TfrmVersioning.GetFileManager: TFileManager;
+begin
+  if not Assigned(FFileManager) then
+    FFileManager := TFileManager.Create;
+  Result := FFileManager;
 end;
 
 function TfrmVersioning.GetSSO: TMicrosoftSSO;
@@ -157,6 +179,40 @@ begin
   Result := FWebForm;
 end;
 
+procedure TfrmVersioning.lbMigrationListClick(Sender: TObject);
+begin
+  if lbMigrationList.ItemIndex = -1 then
+    exit;
+  FormatJson(FileManager.ReadFromFile(lbMigrationList.Items[lbMigrationList.ItemIndex]));
+end;
+
+procedure TfrmVersioning.FormatJson(AJsonObj: TJSONObject);
+var
+  LUser, LDate, LMigrationQuery, LDescription: string;
+begin
+  try
+    if Assigned(AJsonObj) then
+    begin
+      LUser := AJsonObj.GetValue<string>(UTENTE);
+      LDate := AJsonObj.GetValue<string>(DATA);
+      LMigrationQuery := AJsonObj.GetValue<string>(MIGRATIONQUERY);
+      LDescription := AJsonObj.GetValue<string>(DESCRIPTION);
+
+      ShowMessage(Format(USER_FORM + sLineBreak +
+                         DATE_FORM + sLineBreak +
+                         MIGRATION_FORM + sLineBreak +
+                         DESCRIPTION_FORM,
+                         [LUser, LDate, LMigrationQuery, LDescription]));
+    end
+    else
+      ShowMessage(INVALID_JSON);
+  except
+    on E: Exception do
+      ShowMessage(JSON_ACCESS_ERROR + E.Message);
+  end;
+end;
+
+
 procedure TfrmVersioning.LogIn(AProc: TGoToAccessURL);
 begin
 
@@ -176,6 +232,11 @@ begin
   SSO.LogOut;
 
   lblUserName.Caption := EmptyStr;
+end;
+
+procedure TfrmVersioning.UpdateMigrationList;
+begin
+  lbMigrationList.Items := DataBaseVersioning.GetMigrations;
 end;
 
 procedure TfrmVersioning.ViewGoToWindow(AUrl: string);

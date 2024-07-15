@@ -8,13 +8,14 @@ uses
 type
   TDatabaseVersioning = class(TInterfacedObject, IDatabaseVersioning)
   private
-
+    FMigrationLocation: string;
     FFileManager: TFileManager;
     FQueryExecutor: TQueryExecutor;
     FMigrationFileReader: TMigrationFileReader;
 
 
     function GetFileManager: TFileManager;
+    property FileManager: TFileManager read GetFileManager write FFileManager;
 
     function GetQueryExecutor: TQueryExecutor;
     property QueryExecutor: TQueryExecutor read GetQueryExecutor write FQueryExecutor;
@@ -22,14 +23,12 @@ type
     function GetMigrationFileReader: TMigrationFileReader;
     property MigrationFileReader: TMigrationFileReader read GetMigrationFileReader write FMigrationFileReader;
   public
-    constructor Create;
+    constructor Create(AMigrationLocation: string);
     destructor Destroy; override;
     procedure AddMigration(AUser, AMigrationQuery, ADescription: string);
     procedure ExecuteMigrations;
     function GetMigrations: TStringList;
 
-
-    property FileManager: TFileManager read GetFileManager write FFileManager;
   end;
 
 implementation
@@ -39,12 +38,12 @@ uses
 
 { TDatabaseVersioning }
 
-constructor TDatabaseVersioning.Create;
+constructor TDatabaseVersioning.Create(AMigrationLocation: string);
 begin
-  inherited;
   FFileManager := nil;
   FQueryExecutor := nil;
   FMigrationFileReader := nil;
+  FMigrationLocation := AMigrationLocation;
 end;
 
 destructor TDatabaseVersioning.Destroy;
@@ -67,7 +66,7 @@ begin
   LMigrationJson := TJSONObject.Create;
   try
     LMigrationJson := TJSONBuilder.CreateMigrationJSON(AUser, LFileName, AMigrationQuery, ADescription);
-    FileManager.WriteToFile(MIGRATION_LOCATION + LFileName + JSON_FILE_TYPE, LMigrationJson);
+    FileManager.WriteToFile(FMigrationLocation + LFileName + JSON_FILE_TYPE, LMigrationJson);
   finally
     LMigrationJson.Free;
   end;
@@ -120,7 +119,7 @@ end;
 function TDatabaseVersioning.GetMigrationFileReader: TMigrationFileReader;
 begin
   if not Assigned(FMigrationFileReader) then
-    FMigrationFileReader := TMigrationFileReader.Create(MIGRATION_LOCATION);
+    FMigrationFileReader := TMigrationFileReader.Create(FMigrationLocation);
   Result := FMigrationFileReader;
 end;
 
