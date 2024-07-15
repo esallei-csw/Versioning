@@ -147,7 +147,7 @@ end;
 function TfrmVersioning.GetDataBaseVersioning: IDatabaseVersioning;
 begin
   if not Assigned(FDataBaseVersioning) then
-    FDataBaseVersioning := TDatabaseVersioning.Create(DEFAULT_MIGRATION_LOCATION);
+    FDataBaseVersioning := TDatabaseVersioning.Create;
   Result := FDataBaseVersioning;
 end;
 
