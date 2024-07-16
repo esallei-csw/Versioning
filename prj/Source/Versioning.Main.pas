@@ -5,7 +5,8 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Versioning.WebView, LoginSSO.User.Information, LoginSSO.Logic
-  , VersioningRT.LogicInterface, VersioningRT.Logic, VersioningRT.FileManager, System.JSON;
+  , VersioningRT.LogicInterface, VersioningRT.Logic, VersioningRT.FileManager, System.JSON,
+  Vcl.ExtDlgs, Vcl.FileCtrl;
 
 type
   TfrmVersioning = class(TForm)
@@ -23,6 +24,7 @@ type
     lblExecuteResult: TLabel;
     lbMigrationList: TListBox;
     lblMigrationList: TLabel;
+    edtMigrationLocation: TEdit;
     procedure btnLoginClick(Sender: TObject);
     procedure btnLogoutClick(Sender: TObject);
     procedure btnAddMigrationClick(Sender: TObject);
@@ -83,6 +85,8 @@ begin
   FDataBaseVersioning := nil;
   FWebForm := nil;
 
+  edtMigrationLocation.Text := DEFAULT_MIGRATION_LOCATION;
+
   UpdateMigrationList;
 end;
 
@@ -125,7 +129,6 @@ begin
     ShowMessage(NOT_LOGGED);
     exit;
   end;
-
   try
     DataBaseVersioning.ExecuteMigrations;
     lblExecuteResult.Caption := MIGRATION_EXECUTION_SUCCESS;
@@ -147,7 +150,7 @@ end;
 function TfrmVersioning.GetDataBaseVersioning: IDatabaseVersioning;
 begin
   if not Assigned(FDataBaseVersioning) then
-    FDataBaseVersioning := TDatabaseVersioning.Create(DEFAULT_MIGRATION_LOCATION);
+    FDataBaseVersioning := TDatabaseVersioning.Create(edtMigrationLocation.Text);
   Result := FDataBaseVersioning;
 end;
 

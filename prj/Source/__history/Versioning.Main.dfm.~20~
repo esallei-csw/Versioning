@@ -129,11 +129,4 @@ object frmVersioning: TfrmVersioning
     TabOrder = 6
     OnClick = lbMigrationListClick
   end
-  object edtMigrationLocation: TEdit
-    Left = 592
-    Top = 36
-    Width = 185
-    Height = 21
-    TabOrder = 7
-  end
 end

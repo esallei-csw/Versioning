@@ -33,12 +33,11 @@ end;
 procedure TQueryExecutor.SetupConnection(ADataBaseName, AServerName, AUserName, APassword: string);
 begin
   // Configurazione della connessione al database
-  FConnection.DriverName := DRIVER_NAME;
+  FConnection.DriverName := DRIVER_NAME; // Cambiare con il driver appropriato
   FConnection.Params.Database := ADataBaseName;
   FConnection.Params.UserName := AUserName;
   FConnection.Params.Password := APassword;
-  FConnection.Params.Add(SERVER + AServerName);
-
+  FConnection.Params.Add(SERVER + AServerName); // Specificare il server
   FConnection.LoginPrompt := False;
   try
     FConnection.Connected := True;

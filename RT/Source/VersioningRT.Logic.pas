@@ -13,7 +13,6 @@ type
     FQueryExecutor: TQueryExecutor;
     FMigrationFileReader: TMigrationFileReader;
 
-
     function GetFileManager: TFileManager;
     property FileManager: TFileManager read GetFileManager write FFileManager;
 
